@@ -1,1 +1,1 @@
-web: gunicorn run:app --log-file=- 
+web: gunicorn run:trends.py --log-file=- 
