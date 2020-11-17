@@ -247,14 +247,14 @@ def main():
         # holt_winter = open("hw_preds.pkl", "rb")
         # hw = pickle.load(holt_winter)    
         
-        with open("hw_preds.pkl", "rb") as hw:
-          holt = pickle.load(hw)
+        # with open("hw_preds.pkl", "rb") as hw:
+        #   holt = pickle.load(hw)
         
         # sarima_model = open("sarima_model.pkl", "rb")
         # sarima = pickle.load(sarima_model) 
         
-        with open("sarima_model.pkl", "rb") as sm:
-          sarima = pickle.load(sm)
+        # with open("sarima_model.pkl", "rb") as sm:
+        #   sarima = pickle.load(sm)
         
         # naive_model_mean = open("naive_model_mean.pkl", "rb")
         # naive_mean = pickle.load(naive_model_mean)
