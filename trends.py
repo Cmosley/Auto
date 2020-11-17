@@ -14,12 +14,20 @@ from sktime.performance_metrics.forecasting import smape_loss
 from sktime.utils.plotting.forecasting import plot_ys
 from sktime.forecasting.arima import AutoARIMA
 
+import pickle
 import warnings
 warnings.filterwarnings('ignore')
 st.set_option('deprecation.showfileUploaderEncoding', False)
 st.set_option('deprecation.showPyplotGlobalUse', False)
 
 st.title('Time Series - ML')
+
+@st.cache
+def load_data1():
+    dash = pd.read_csv("./datasets/Dashboard.csv")
+    return dash
+
+dash = load_data1()
 
 @st.cache
 def tsplot(y, lags=None, figsize=(20, 12), style='bmh'):
@@ -73,8 +81,8 @@ def main():
     # Add a slider to the sidebar:
     st.sidebar.markdown("# Lang")
     x = st.sidebar.slider(
-        'Select a lang for ACF and PACF analysis',
-        50, 60
+        'Select a lag for ACF and PACF analysis',
+        7, 90
     )
     # Add a slider to the sidebar:
     st.sidebar.markdown("# Seasonal")
@@ -91,43 +99,47 @@ def main():
     if uploaded_file is not None and choice == "Exploratory Data Analysis":
         data = pd.read_csv(uploaded_file)
         st.subheader(choice)
-        # Show dataset
-        if st.checkbox("Show Dataset"):
-            rows = st.number_input("Number of rows", 5, len(data))
-            st.dataframe(data.head(rows))
-        # Show columns
-        if st.checkbox("Columns"):
-            st.write(data.columns)
-        # Data types
-        if st.checkbox("Column types"):
-            st.write(types(data))
-        # Show Shape
-        if st.checkbox("Shape of Dataset"):
-            data_dim = st.radio("Show by", ("Rows", "Columns", "Shape"))
-            if data_dim == "Columns":
-                st.text("Number of Columns: ")
-                st.write(data.shape[1])
-            elif data_dim == "Rows":
-                st.text("Number of Rows: ")
-                st.write(data.shape[0])
-            else:
-                st.write(data.shape)
-        # Check null values in dataset
-        if st.checkbox("Check null values"):
-            nvalues = null_values(data)
-            st.write(nvalues)
-        # Show Data summary
-        if st.checkbox("Show Data Summary"):
-            st.text("Datatypes Summary")
-            st.write(data.describe())
-        # Plot time series, ACF and PACF
-        if st.checkbox("Select column as time series"):
-            columns = data.columns.tolist()
-            selected = st.multiselect("Choose", columns)
-            series = data[selected]
-            if st.button('Plot Time Series, ACF and PACF'):
-                tsplot(series, lags=x)
-                st.pyplot()
+        # dashboard chart
+        st.line_chart(dash)
+
+
+        # # Show dataset
+        # if st.checkbox("Show Dataset"):
+        #     rows = st.number_input("Number of rows", 5, len(data))
+        #     st.dataframe(data.head(rows))
+        # # Show columns
+        # if st.checkbox("Columns"):
+        #     st.write(data.columns)
+        # # Data types
+        # if st.checkbox("Column types"):
+        #     st.write(types(data))
+        # # Show Shape
+        # if st.checkbox("Shape of Dataset"):
+        #     data_dim = st.radio("Show by", ("Rows", "Columns", "Shape"))
+        #     if data_dim == "Columns":
+        #         st.text("Number of Columns: ")
+        #         st.write(data.shape[1])
+        #     elif data_dim == "Rows":
+        #         st.text("Number of Rows: ")
+        #         st.write(data.shape[0])
+        #     else:
+        #         st.write(data.shape)
+        # # Check null values in dataset
+        # if st.checkbox("Check null values"):
+        #     nvalues = null_values(data)
+        #     st.write(nvalues)
+        # # Show Data summary
+        # if st.checkbox("Show Data Summary"):
+        #     st.text("Datatypes Summary")
+        #     st.write(data.describe())
+        # # Plot time series, ACF and PACF
+        # if st.checkbox("Select column as time series"):
+        #     columns = data.columns.tolist()
+        #     selected = st.multiselect("Choose", columns)
+        #     series = data[selected]
+        #     if st.button('Plot Time Series, ACF and PACF'):
+        #         tsplot(series, lags=x)
+        #         st.pyplot()
 
     elif uploaded_file is not None and choice == "Plotting and Visualization":
         st.subheader(choice)
