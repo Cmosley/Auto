@@ -43,8 +43,8 @@ from sktime.performance_metrics.forecasting import smape_loss
 # from tensorflow.keras.preprocessing.sequence import TimeseriesGenerator
 
 # metrics
-from sklearn.metrics import mean_absolute_error as mae
-from sklearn.metrics import accuracy_score
+# from sklearn.metrics import mean_absolute_error as mae
+# from sklearn.metrics import accuracy_score
 
 #model export
 import pickle
@@ -296,7 +296,7 @@ def main():
 
     else:
         # st.subheader("Home")
-        image = Image.open('assets\Auto-gm-logo.png')
+        image = Image.open('./assets/Auto-gm-logo.png')
         st.image(image, use_column_width=True)
         components.html(footer, height=500)
 
