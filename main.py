@@ -224,7 +224,7 @@ def main():
             elif dash_display == "Month": 
                 st.line_chart(MTD_sales, width=500, height=250)
                 st.write('Total Sales for the the last month:', MTD_sales_num)
-                st.line_chart(WTD_cars, width=500, height=250)
+                st.line_chart(MTD_cars, width=500, height=250)
                 st.write('Total Cars for the the last month:', MTD_cars_num)
                 # st.altair_chart(month_net)
                 # st.altair_chart(month_cars)
@@ -291,19 +291,15 @@ def main():
 
     elif choice == "Trends":
         st.subheader("Trends")
-        # components.iframe('https://jcharistech.com')
-        # components.html(footer_temp,height=500)
+        st.write("UNDER CONSTRUCTION")
+        
 
     else:
-        # st.subheader("Home")
         image = Image.open('./assets/Auto-gm-logo.png')
         st.image(image, use_column_width=True)
         components.html(footer, height=500)
 
 
-    
-
-    
 
         html_temp = """
         <div style="background-color:royalblue;padding:10px;border-radius:10px">
@@ -311,14 +307,6 @@ def main():
         </div>
         """
 
-        
-
-        
-
-
-
-
-    
 
 if __name__ == '__main__':
     main()
