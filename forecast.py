@@ -1,109 +1,110 @@
 import streamlit as st 
+
+# EDA Pkgs
+import pandas as pd 
 import numpy as np 
 
-import matplotlib.pyplot as plt
-from sklearn import datasets
-from sklearn.model_selection import train_test_split
 
-from sklearn.decomposition import PCA
-from sklearn.svm import SVC
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.ensemble import RandomForestClassifier
+# Data Viz Pkg
+import matplotlib.pyplot as plt 
+import matplotlib
+matplotlib.use("Agg")
+import seaborn as sns 
 
-from sklearn.metrics import accuracy_score
 
-st.title('Streamlit Example')
 
-st.write("""
-# Explore different classifier and datasets
-Which one is the best?
-""")
+def main():
+	"""Semi Automated ML App with Streamlit """
 
-dataset_name = st.sidebar.selectbox(
-    'Select Dataset',
-    ('Iris', 'Breast Cancer', 'Wine')
-)
+	activities = ["EDA","Plots"]	
+	choice = st.sidebar.selectbox("Select Activities",activities)
 
-st.write(f"## {dataset_name} Dataset")
+	if choice == 'EDA':
+		st.subheader("Exploratory Data Analysis")
 
-classifier_name = st.sidebar.selectbox(
-    'Select classifier',
-    ('KNN', 'SVM', 'Random Forest')
-)
+		data = st.file_uploader("Upload a Dataset", type=["csv", "txt"])
+		if data is not None:
+			df = pd.read_csv(data)
+			st.dataframe(df.head())
+			
 
-def get_dataset(name):
-    data = None
-    if name == 'Iris':
-        data = datasets.load_iris()
-    elif name == 'Wine':
-        data = datasets.load_wine()
-    else:
-        data = datasets.load_breast_cancer()
-    X = data.data
-    y = data.target
-    return X, y
+			if st.checkbox("Show Shape"):
+				st.write(df.shape)
 
-X, y = get_dataset(dataset_name)
-st.write('Shape of dataset:', X.shape)
-st.write('number of classes:', len(np.unique(y)))
+			if st.checkbox("Show Columns"):
+				all_columns = df.columns.to_list()
+				st.write(all_columns)
 
-def add_parameter_ui(clf_name):
-    params = dict()
-    if clf_name == 'SVM':
-        C = st.sidebar.slider('C', 0.01, 10.0)
-        params['C'] = C
-    elif clf_name == 'KNN':
-        K = st.sidebar.slider('K', 1, 15)
-        params['K'] = K
-    else:
-        max_depth = st.sidebar.slider('max_depth', 2, 15)
-        params['max_depth'] = max_depth
-        n_estimators = st.sidebar.slider('n_estimators', 1, 100)
-        params['n_estimators'] = n_estimators
-    return params
+			if st.checkbox("Summary"):
+				st.write(df.describe())
 
-params = add_parameter_ui(classifier_name)
+			if st.checkbox("Show Selected Columns"):
+				selected_columns = st.multiselect("Select Columns",all_columns)
+				new_df = df[selected_columns]
+				st.dataframe(new_df)
 
-def get_classifier(clf_name, params):
-    clf = None
-    if clf_name == 'SVM':
-        clf = SVC(C=params['C'])
-    elif clf_name == 'KNN':
-        clf = KNeighborsClassifier(n_neighbors=params['K'])
-    else:
-        clf = clf = RandomForestClassifier(n_estimators=params['n_estimators'], 
-            max_depth=params['max_depth'], random_state=1234)
-    return clf
+			if st.checkbox("Show Value Counts"):
+				st.write(df.iloc[:,-1].value_counts())
 
-clf = get_classifier(classifier_name, params)
-#### CLASSIFICATION ####
+			if st.checkbox("Correlation Plot(Matplotlib)"):
+				plt.matshow(df.corr())
+				st.pyplot()
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=1234)
+			if st.checkbox("Correlation Plot(Seaborn)"):
+				st.write(sns.heatmap(df.corr(),annot=True))
+				st.pyplot()
 
-clf.fit(X_train, y_train)
-y_pred = clf.predict(X_test)
 
-acc = accuracy_score(y_test, y_pred)
+			if st.checkbox("Pie Plot"):
+				all_columns = df.columns.to_list()
+				column_to_plot = st.selectbox("Select 1 Column",all_columns)
+				pie_plot = df[column_to_plot].value_counts().plot.pie(autopct="%1.1f%%")
+				st.write(pie_plot)
+				st.pyplot()
 
-st.write(f'Classifier = {classifier_name}')
-st.write(f'Accuracy =', acc)
 
-#### PLOT DATASET ####
-# Project the data onto the 2 primary principal components
-pca = PCA(2)
-X_projected = pca.fit_transform(X)
 
-x1 = X_projected[:, 0]
-x2 = X_projected[:, 1]
+	elif choice == 'Plots':
+		st.subheader("Data Visualization")
+		data = st.file_uploader("Upload a Dataset", type=["csv", "txt", "xlsx"])
+		if data is not None:
+			df = pd.read_csv(data)
+			st.dataframe(df.head())
 
-fig = plt.figure()
-plt.scatter(x1, x2,
-        c=y, alpha=0.8,
-        cmap='viridis')
 
-plt.xlabel('Principal Component 1')
-plt.ylabel('Principal Component 2')
-plt.colorbar()
+			if st.checkbox("Show Value Counts"):
+				st.write(df.iloc[:,-1].value_counts().plot(kind='bar'))
+				st.pyplot()
+		
+			# Customizable Plot
 
-#plt.show()
-st.pyplot(fig)
+			all_columns_names = df.columns.tolist()
+			type_of_plot = st.selectbox("Select Type of Plot",["area","bar","line","hist","box","kde"])
+			selected_columns_names = st.multiselect("Select Columns To Plot",all_columns_names)
+
+			if st.button("Generate Plot"):
+				st.success("Generating Customizable Plot of {} for {}".format(type_of_plot,selected_columns_names))
+
+				# Plot By Streamlit
+				if type_of_plot == 'area':
+					cust_data = df[selected_columns_names]
+					st.area_chart(cust_data)
+
+				elif type_of_plot == 'bar':
+					cust_data = df[selected_columns_names]
+					st.bar_chart(cust_data)
+
+				elif type_of_plot == 'line':
+					cust_data = df[selected_columns_names]
+					st.line_chart(cust_data)
+
+				# Custom Plot 
+				elif type_of_plot:
+					cust_plot= df[selected_columns_names].plot(kind=type_of_plot)
+					st.write(cust_plot)
+					st.pyplot()
+    
+
+
+if __name__ == '__main__':
+	main()
