@@ -5,7 +5,6 @@ The MVP version of my data product AUTO GM, can be found here https://auto-gm.he
 ## Table of Contents 
 
 - Executive Summary 
-- Application Overview
 - Software Requirements
 - Sources
 ---
@@ -27,22 +26,8 @@ The best performing SARIMA model was tuned to 12 seasonal periods, with high aut
 
 Business metrics can be forecasted into the future, however the scale of these predictions will change the effectiveness. Larger scale, higher volume businesses will definitely have greater benefit than a local small business
 
-
 --- 
-## Application Overview & Future Plans 
 
-Auto GM is built on a three pillar system of feedback for management. Predict, Identify and Inform
-
-Predict: 
-The goal of my predictions will be to outperform an industry standard mean benchmark. Modeling out KPI's in an interpretable way that saves the company money and resources is the primary goal of these predictions
-
-Identify: 
-With the numerous KPI's a business can look to the assess business health, what should they focus on first? The identification pillar of my application will be able to analyze trends in key areas of the business to understand business performance in real-time. 
-
-Inform:
-With the identification of these trends, the next step is to involve key personnel in this knowledge and provide for them a feedback mechanism on how to change the underperforming metrics and celebrate the positive trending ones.
-
----
 ## Software Requirements:
 - Data analysis required the use of pandas, scikit-learn, numpy and matplotlib
 - Modeling required the use of sktime's sarima model and naive forecaster as well as holt winters from statsmodels 
